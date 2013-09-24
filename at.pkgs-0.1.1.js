@@ -16,7 +16,7 @@
  */
 
 /*
- * core components of at.pkgs ECMAScript / Javascript library
+ * core components of at.pkgs ECMAScript / JavaScript library
  */
 (at = this.at || {}).pkgs = new (function(_root_) {
 	/*
@@ -55,7 +55,7 @@
 
 		_class_ = _namespace_.Object.extend(function(name) {
 			this.parent.self();
-			this.level = this.self.ERROR;
+			this.level = this.self.INFO;
 			this.name = name;
 		}, { /* prototype */
 			level: null,
@@ -137,6 +137,7 @@
 			},
 			debug: function(name) {
 				this.get(name).level = this.DEBUG;
+				return this;
 			},
 			format: function(template, parameter) {
 				var parameters;
