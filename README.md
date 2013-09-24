@@ -100,6 +100,25 @@ IE10以前を除くモダンブラウザではコールスタックが出力さ�
 	+ `Log`  
 		ログクラスです。
 
+#### static append() ####
+ログの出力を行います。
+このメソッドを上書きすることで任意のアペンダにログ出力可能です。
+
+このメソッドはアペンダが出力可能か調査するために引数なしで呼び出されます。
+
+	enabled = at.pkgs.Log.append(
+			message,
+			trace);
+
++ 引数
+	+ (省略可能) `message`  
+		メッセージです。
+	+ (省略可能) `trace`  
+		コールスタック文字列またはfalse。
++ 戻り値
+	+ `enabled`  
+		アペンダが出力可能であればtrueを返します。
+
 #### static format() ####
 ログのフォーマットを行います。
 このメソッドを上書きすることで任意のフォーマッタを使用可能です。
@@ -169,10 +188,10 @@ IE10以前を除くモダンブラウザではコールスタックが出力さ�
 		func('non-suppressed error');
 	})();
 	// [ERROR] test: Error: non-suppressed error
-	// func@http://localhost:8902/test.html:31
-	// @http://localhost:8902/test.html:41
-	// _class_<.trap/<@http://localhost:8902/~/script/vendor/at.pkgs.js?1380014279:120
-	// @http://localhost:8902/test.html:40
+	// func@http://localhost/test.html:31
+	// @http://localhost/test.html:41
+	// _class_<.trap/<@http://localhost/~/script/vendor/at.pkgs.js?1380014279:120
+	// @http://localhost/test.html:40
 	
 	// 例外は再throwされました。
 	// Error: non-suppressed error
