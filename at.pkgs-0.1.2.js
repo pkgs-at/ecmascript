@@ -79,7 +79,7 @@
 				var message;
 
 				if (this.level < level) return false;
-				if (!(_root_.console && _root_.console.log)) return false;
+				if (!this.self.append()) return false;
 				if (parameters.length < 1) return true;
 				message = '[' + this.self.LEVELS[level] + '] ';
 				message += this.name + ': ';
@@ -90,8 +90,7 @@
 				catch (error) {
 					trace = this.stack(error);
 				}
-				_root_.console.log(message + (trace ? ('\n' + trace) : ''));
-				return true;
+				return this.self.append(message, trace);
 			},
 			debug: function(template, parameter) {
 				return this.log(this.self.DEBUG, arguments);
@@ -138,6 +137,12 @@
 			debug: function(name) {
 				this.get(name).level = this.DEBUG;
 				return this;
+			},
+			append: function(message, trace) {
+				if (!(_root_.console && _root_.console.log)) return false;
+				if (arguments.length < 1) return true;
+				_root_.console.log(message + (trace ? ('\n' + trace) : ''));
+				return true;
 			},
 			format: function(template, parameter) {
 				var parameters;
