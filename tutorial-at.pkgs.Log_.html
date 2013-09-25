@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>at.pkgs.js Namespace: at.pkgs</title>
+	<title>at.pkgs.js tutorialat.pkgs.Log</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -91,119 +91,103 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
-					
-
-
-	<h1 class="page-title">Namespace: at.pkgs</h1>
-<section>
-
-<header>
-    <h2>
-    at.pkgs
-    </h2>
+					<section>
     
-</header>
+<header>
+    
+
+    <h2>at.pkgs.Log</h2>
+</header>  
 
 <article>
-    <div class="container-overview">
-    
+    <p>ログに関する機能を提供します。
+IE10以前を除くモダンブラウザではコールスタックが出力されます。</p>
+<ul>
+<li>APIリファレンス: <a href="at.pkgs.Log.html">at.pkgs.Log</a></li>
+</ul>
+<h2>使用例</h2>
+<h3>デバッグログの有効化</h3>
+<pre><code>var log;
 
-    
-        
-            <div class="description"><p>Core components of at.pkgs ECMAScript / JavaScript library.</p></div>
-        
+log = at.pkgs.Log.get('test');
 
-        
-<dl class="details">
-    
+log.error('error: always enabled');
+// [ERROR] test: error: always enabled
+// @http://localhost/test.html:24
 
-    
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.1.3</li></ul></dd>
-    
+log.info('info: always enabled');
+// [INFO] test: info: always enabled
+// @http://localhost/test.html:25
 
-    
+log.debug('debug: disabled by default');
 
-    
+at.pkgs.Log.debug('test');
 
-    
+log.debug('debug: enabled');
+// [DEBUG] test: debug: enabled
+// @http://localhost/test.html:28</code></pre>
+<h3>trap()の使用</h3>
+<pre><code>var log;
+var func;
 
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:sotaro.suzuki@architector.jp">鈴木 聰太郎</a></li>
-        </ul>
-    </dd>
-    
+log = at.pkgs.Log.get('test');
+func = function(message) {
+    throw Error(message);
+};
 
-    
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>2009-2013, Architector Inc., Japan</li></ul></dd>
-    
+log.trap(function() {
+    log.debug('debug');
+    func('suppressed error');
+}, true)();
+// [ERROR] test: Error: suppressed error
+// func@http://localhost/test.html:31
+// @http://localhost/test.html:35
+// _class_<.trap/<@http://localhost/~/script/vendor/at.pkgs.js?1380014279:120
+// @http://localhost/test.html:36
 
-    
+// 例外は再throwされません。
 
-    
+log.trap(function() {
+    func('non-suppressed error');
+})();
+// [ERROR] test: Error: non-suppressed error
+// func@http://localhost/test.html:31
+// @http://localhost/test.html:41
+// _class_<.trap/<@http://localhost/~/script/vendor/at.pkgs.js?1380014279:120
+// @http://localhost/test.html:40
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="at.pkgs.js.html">at.pkgs.js</a>, <a href="at.pkgs.js.html#sunlight-1-line-3">line 3</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="at.pkgs.EventBinder.html">EventBinder</a></dt>
-            <dd></dd>
-        
-            <dt><a href="at.pkgs.Log.html">Log</a></dt>
-            <dd></dd>
-        
-            <dt><a href="at.pkgs.Object.html">Object</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+// 例外は再throwされました。
+// Error: non-suppressed error</code></pre>
+<h3>trap()内における注入されたロガーの使用</h3>
+<pre><code>at.pkgs.Log.get('test').trap(function() {
+    // arguments.calleeを経由して注入されたロガーを参照します。
+    arguments.callee.log.debug('optional log instance injection');
+}, false, true)();
+// [DEBUG] test: optional log instance injection
+// @http://localhost/test.html:37
+// _class_<.trap/<@http://localhost/~/script/vendor/at.pkgs.js?1380005535:120
+// @http://localhost/test.html:38</code></pre>
+<h3>デフォルトフォーマッタの使用</h3>
+<pre><code>at.pkgs.Log.get('test').debug(
+        'this is a formt {} | {:length} | {1:length} | {2}',
+        ['a', 'b'],
+        ['c', 'd', 'e'],
+        'aaaa');
+// [DEBUG] test: this is a formt a,b | 2 | 3 | aaaa
+// @http://localhost/test.html:28</code></pre>
+<h3>フォーマッタの変更</h3>
+<pre><code>// underscore.jsの_.templateを使用します。
+at.pkgs.Log.format = function(format, parameter) {
+    return parameter ? (_.template(format))(parameter) : format;
+};
+//
+at.pkgs.Log.get('test').debug('テンプレート', {aaa: 1, bbb: 2})</code></pre>
 </article>
 
-</section>
-
-
-
+</section>  
 
 				</div>
 
@@ -223,10 +207,6 @@
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>
