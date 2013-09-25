@@ -470,7 +470,7 @@
 			 * イベントを発火(通知)する.
 			 * 
 			 * @since 0.1.0
-			 * @memberof at.pkgs.Log#
+			 * @memberof at.pkgs.EventBinder#
 			 * @param {...*} arguments イベントハンドラに渡す引数.
 			 * @returns {at.pkgs.EventBinder} イベントバインダ.
 			 */
