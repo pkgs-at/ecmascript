@@ -33,8 +33,9 @@
 		 * @classdesc
 		 *     継承に関する基本機能を提供するベースクラス.
 		 *     チュートリアル: {@tutorial at.pkgs.Object}
+		 * @param {at.pkgs.Object=} instance インスタンス.
 		 */
-		_class_ = function() {};
+		_class_ = function(instance) {};
 		/**
 		 * このクラスのサブクラスを作成する.
 		 * 
@@ -49,20 +50,22 @@
 		 */
 		_class_.extend = function(constructor, prototype, statics) {
 			var closure;
+			var name;
 
 			closure = new Function();
 			closure.prototype = this.prototype;
 			constructor.prototype = new closure();
+			name = null;
 			if (prototype)
-				for (var name in prototype) constructor.prototype[name] = prototype[name];
+				for (name in prototype) constructor.prototype[name] = prototype[name];
 			constructor.prototype.self = constructor;
 			constructor.prototype.parent = this.prototype;
-			for (var name in this) {
+			for (name in this) {
 				if (name == 'prototype') continue;
 				constructor[name] = this[name];
 			}
 			if (statics)
-				for (var name in statics) constructor[name] = statics[name];
+				for (name in statics) constructor[name] = statics[name];
 			return constructor;
 		};
 		/**
@@ -102,11 +105,13 @@
 			 *     チュートリアル: {@tutorial at.pkgs.Log}
 			 * @extends {at.pkgs.Object}
 			 * @param {String} name ログ名称.
+			 * @param {at.pkgs.Log=} instance インスタンス.
 			 */
-			function(name) {
-				this.parent.self();
-				this.level = this.self.INFO;
-				this.name = name;
+			function(name, instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.level = this.self.INFO;
+				instance.name = name;
 			}
 		), { /* prototype */
 			/**
@@ -399,10 +404,12 @@
 			 *     イベントバインドクラス.
 			 *     チュートリアル: {@tutorial at.pkgs.EventBinder}
 			 * @extends {at.pkgs.Object}
+			 * @param {at.pkgs.EventBinder=} instance インスタンス.
 			 */
-			function() {
-				this.parent.self();
-				this.handlers = new Array();
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.handlers = new Array();
 			}
 		), { /* prototype */
 			/**

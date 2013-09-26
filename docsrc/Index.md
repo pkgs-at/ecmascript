@@ -3,6 +3,13 @@
 
 at.pkgs.jsはECMAScript/JavaScript向けのライブラリスタックです。
 
+## ダウンロード ##
+
++ at.pkgs.js  
+[開発版](https://raw.github.com/pkgs-at/ecmascript/master/at.pkgs.js)
+|
+[圧縮版](https://raw.github.com/pkgs-at/ecmascript/master/at.pkgs.min.js)
+
 ## コンポーネント ##
 
 詳細は各リンク先のドキュメントを参照してください。
@@ -16,7 +23,7 @@ at.pkgs.jsはECMAScript/JavaScript向けのライブラリスタックです。
 
 基本的な継承に関わる機能を提供します。
 
-+ チュートリアル: (準備中) {@tutorial at.pkgs.Object}
++ チュートリアル: {@tutorial at.pkgs.Object}
 + APIリファレンス: {@link at.pkgs.Object}
 
 #### {@link at.pkgs.Log|Class: at.pkgs.Log} ####
@@ -31,8 +38,12 @@ IE10以前を除くモダンブラウザではコールスタックが出力さ�
 
 イベント通知用のバインダを提供します。
 
-+ チュートリアル: (準備中) {@tutorial at.pkgs.EventBinder}
++ チュートリアル: {@tutorial at.pkgs.EventBinder}
 + APIリファレンス: {@link at.pkgs.EventBinder}
+
+## ソースコード ##
+
++ [GitHub](https://github.com/pkgs-at/ecmascript)
 
 ## ライセンス ##
 
