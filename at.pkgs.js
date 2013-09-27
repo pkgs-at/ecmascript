@@ -665,6 +665,8 @@
 			render: function(data) {
 				var _text_;
 
+				if (data._text_ !== void 0)
+					throw new Error('do not use property \'_text_\' in template parameter');
 				_text_ = '';
 				with (data || {}) {
 					eval(this.code);
