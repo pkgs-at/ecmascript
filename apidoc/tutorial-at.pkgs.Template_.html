@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>at.pkgs.js tutorialat.pkgs.Object</title>
+	<title>at.pkgs.js tutorialat.pkgs.Template</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -115,180 +115,72 @@
 <header>
     
 
-    <h2>at.pkgs.Object</h2>
+    <h2>at.pkgs.Template</h2>
 </header>  
 
 <article>
-    <p>基本的な継承に関わる機能を提供します。</p>
+    <p>underscore.jsテンプレート相当のテンプレート処理を提供します。</p>
 <ul>
-<li>APIリファレンス: <a href="at.pkgs.Object.html">at.pkgs.Object</a></li>
+<li>APIリファレンス: <a href="at.pkgs.Template.html">at.pkgs.Template</a></li>
+<li>APIリファレンス: <a href="at.pkgs.TemplateEngine.html">at.pkgs.TemplateEngine</a></li>
+<li>APIリファレンス: <a href="at.pkgs.html#template">at.pkgs.template</a></li>
 </ul>
+<h2>テンプレートの記述</h2>
+<p>デフォルトのテンプレートブロックのデリミタは下記の通りになっています。
+このデリミタは変更できます(後述)。</p>
+<h3>{% ... %}</h3>
+<p>このブロックはJavaScriptコードとして実行されます。</p>
+<h3>{= ... =}</h3>
+<p>このブロックの式を評価し、エスケープ処理した後出力されます。
+エスケープ処理は「<>'&quot;&」を実体参照に変換するHTMLエスケープ相当の処理を行いますが、この挙動は変更できます。</p>
+<h3>{@ ... @}</h3>
+<p>このブロックは式を評価し、直接(エスケープなどされずに)出力されます。
+nullやundefinedは空文字として出力されますが、この挙動は変更できます。</p>
 <h2>使用例</h2>
-<h3>基底クラスのメソッド呼び出し(正しい方法)</h3>
-<p>基底クラスのメソッドを呼び出すメソッドはインスタンス変数を伝播するように設計してください。</p>
-<pre><code>var A, B, C;
+<h3>テンプレート処理</h3>
+<pre><code>var template;
 
-A = at.pkgs.Object.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(instance);
-        console.log('A(' + num + ')');
-        instance.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
+template = at.pkgs.template('\
+  あいうえお\
+  {% if (a) { %}\
+  aaaa\
+  {% } else { %}\
+  bbbb\
+  {% } %}\
+  cccc\n\
+  {@ b.c + 1 @}\
+  {= d =}\
+  zzzz\
+  cccc');
+console.log(template({ a: false, b: { c:2 }, d:'<a href=&quot;sss&quot;>aa</a>' }));
+//   あいうえお    bbbb    cccc  3  <a href=&quot;sss&quot;>aa</a>  zzzz  cccc</code></pre>
+<h3>デリミタの変更</h3>
+<p>下記のようにデリミタが変更できます。
+同様にデフォルトのHTMLエスケープ処理を差し替え可能です。
+詳細はAPIリファレンスを参照してください。</p>
+<pre><code>var template;
 
-});
+at.pkgs.TemplateEngine.instance.pattern = /<%(.*?)%>|<=(.*?)=>|<@(.*?)@>|$/g;
+template = at.pkgs.template('\
+  あいうえお\
+  <% if (a) { %>\
+  aaaa\
+  <% } else { %>\
+  bbbb\
+  <% } %>\
+  cccc\n\
+  <@ b.c + 1 @>\
+  <= d =>\
+  zzzz\
+  cccc');</code></pre>
+<h3>ファクトリの使用</h3>
+<p>デリミタの変更などをテンプレートエンジンごとに行うためにコンストラクタが使用可能です。</p>
+<pre><code>var engine;
+var template;
 
-B = A.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(num, instance);
-        console.log('B');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-C = B.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(num, instance);
-        console.log('C');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-var c0, c1;
-
-c0 = new C(0);
-// A(0)
-// B
-// C
-c1 = new C(1);
-// A(1)
-// B
-// C
-c0.f();
-// A.x: 0
-c1.f();
-// A.x: 1</code></pre>
-<h3>基底クラスのメソッド呼び出し: 誤った方法#1: 親クラスのプロトタイプ汚染</h3>
-<p>基底クラスへインスタンス変数を渡さないため親クラスのプロトタイプが汚染されます。</p>
-<pre><code>var A, B, C;
-
-A = at.pkgs.Object.extend((
-    function(num) {
-        this.parent.self();
-        console.log('A(' + num + ')');
-        // !!!!!!!!!!
-        this.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
-
-});
-
-B = A.extend((
-    function(num) {
-        this.parent.self(num);
-        console.log('B');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-C = B.extend((
-    function(num) {
-        this.parent.self(num);
-        console.log('C');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-var c0, c1;
-
-c0 = new C(0);
-// A(0)
-// B
-// C
-c1 = new C(1);
-// A(1)
-// B
-// C
-c0.f();
-// !!!!!!
-// A.x: 1
-c1.f();
-// A.x: 1</code></pre>
-<h3>基底クラスのメソッド呼び出し: 誤った方法#2: 親クラスから親クラスのメソッドが呼び出せない</h3>
-<p>子孫の実行コンテキストで親クラスのメソッドを呼び出すと親クラスから親クラスを呼び出すことができません。</p>
-<pre><code>var A, B, C;
-
-A = at.pkgs.Object.extend((
-    function(num) {
-        this.parent.self.call(this);
-        console.log('A(' + num + ')');
-        this.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
-
-});
-
-B = A.extend((
-    function(num) {
-        this.parent.self.call(this, num);
-        console.log('B');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-C = B.extend((
-    function(num) {
-        this.parent.self.call(this, num);
-        console.log('C');
-    }
-), { /* prototype */
-
-}, { /* statics */
-
-});
-
-var c0;
-
-c0 = new C(0);
-// B
-// B
-// B
-// B
-// B
-// ...</code></pre>
+engine = new TemplateEngine();
+engine.escape = function (source) { ... };
+template = engine.prepare(source);</code></pre>
 </article>
 
 </section>  

@@ -17,7 +17,7 @@
 
 /**
  * @file Core components of at.pkgs ECMAScript / JavaScript library.
- * @version 0.1.3
+ * @version 0.1.4
  * @author 鈴木 聰太郎 <sotaro.suzuki@architector.jp>
  * @copyright 2009-2013, Architector Inc., Japan
  * @namespace at.pkgs
@@ -90,9 +90,6 @@
 		_class_.prototype.parent = null;
 		return _class_;
 	})(this);
-	/*
-	 * log class
-	 */
 	this.Log = (function(_namespace_) {
 		var _class_;
 
@@ -390,9 +387,6 @@
 		});
 		return _class_;
 	})(this);
-	/*
-	 * event binder class
-	 */
 	this.EventBinder = (function(_namespace_) {
 		var _class_;
 
@@ -435,7 +429,7 @@
 			 * @since 0.1.0
 			 * @memberof at.pkgs.EventBinder#
 			 * @param {at.pkgs.EventBinder~EventHandler} handler イベントハンドラ.
-			 * @param {Boolean=} top ハンドラ末尾でなく先頭に追加する場合はtrueを指定.
+			 * @param {Boolean=} top ハンドラを末尾でなく先頭に追加する場合はtrueを指定.
 			 * @returns {at.pkgs.EventBinder} イベントバインダ.
 			 */
 			bind: function(handler, top) {
@@ -493,5 +487,300 @@
 			}
 		});
 		return _class_;
+	})(this);
+	/**
+	 * @since 0.1.4
+	 * @namespace at.pkgs.escape
+	 */
+	this.escape = new (function(_parent_) {
+		this.empty = (function(_namespace_) {
+			var _function_;
+
+			/**
+			 * null及びundefinedを空文字にエスケープする.
+			 * 
+			 * @since 0.1.4
+			 * @method at.pkgs.escape.empty
+			 * @param {*} source エスケープ対象.
+			 * @returns {String} エスケープ済文字列.
+			 */
+			_function_ = function(source) {
+				return (source === null || source === void 0) ? '' : source.toString();
+			};
+			return _function_;
+		})(this);
+		this.html = (function(_namespace_) {
+			var _function_;
+
+			/**
+			 * HTML内のテキストとしてエスケープする.
+			 * 
+			 * @since 0.1.4
+			 * @method at.pkgs.escape.html
+			 * @param {*} source エスケープ対象.
+			 * @returns {String} エスケープ済文字列.
+			 */
+			_function_ = function(source) {
+				return _namespace_.empty(source).replace(/[&<>"']/g, function(matched) {
+					switch (matched) {
+					case '&' :
+						return '&amp;';
+					case '<' :
+						return '&lt;';
+					case '>' :
+						return '&gt;';
+					case '"' :
+						return '&quot;';
+					case "'" :
+						return '&#039;';
+					}
+				});
+			};
+			return _function_;
+		})(this);
+	})(this);
+	this.Template = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Object.extend((
+			/**
+			 * @since 0.1.4
+			 * @class at.pkgs.Template
+			 * @classdesc
+			 *     テンプレートクラス.
+			 *     チュートリアル: {@tutorial at.pkgs.Template}
+			 * @extends {at.pkgs.Object}
+			 * @param {String} source テンプレートソース.
+			 * @param {at.pkgs.TemplateEngine} engine テンプレートエンジン.
+			 * @param {at.pkgs.Template=} instance インスタンス.
+			 */
+			function(source, engine, instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.engine = engine;
+				instance.texts = new Array();
+				instance.prepare(source);
+			}
+		), { /* prototype */
+			/**
+			 * テンプレートエンジン.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @type {at.pkgs.TemplateEngine}
+			 */
+			engine: null,
+			/**
+			 * テキストノードの配列.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @type {String[]}
+			 */
+			texts: null,
+			/**
+			 * テンプレート実行スクリプト.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @type {String}
+			 */
+			code: null,
+			/**
+			 * テンプレートソースを処理し、実行可能にする.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @param {String} テンプレートソース.
+			 */
+			prepare: function(source) {
+				var self;
+				var codes;
+				var last;
+
+				self = this;
+				codes = new Array();
+				if (source === null || source === void 0 || !source.replace) throw new Error('invalid template source');
+				last = 0;
+				source.replace(this.engine.pattern, function(matched, code, escape, raw, offset) {
+					var expression;
+
+					if (last != offset) {
+						codes.push('_text_ += this.text(' + self.texts.length + ');');
+						self.texts.push(source.slice(last, offset));
+					}
+					last = offset + matched.length;
+					expression = code || escape || raw;
+					if (code)
+						codes.push(expression);
+					if (escape)
+						codes.push('_text_ += this.escape(' + expression + ');');
+					if (raw)
+						codes.push('_text_ += this.raw(' + expression + ');');
+					return matched;
+				});
+				this.code = codes.join('\n');
+			},
+			/**
+			 * 指定されたインデックスのテキストを取得する.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @param {Number} index テキストノードインデックス.
+			 * @returns {String} テキスト.
+			 */
+			text: function(index) {
+				return this.texts[index];
+			},
+			/**
+			 * 文字列をエスケープする.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @param {*} source エスケープ対象.
+			 * @returns {String} エスケープ済文字列.
+			 */
+			escape: function(source) {
+				return this.engine.escape(source);
+			},
+			/**
+			 * 文字列化する.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @param {*} source 対象.
+			 * @returns {String} 文字列.
+			 */
+			raw: function(source) {
+				return this.engine.raw(source);
+			},
+			/**
+			 * テンプレートを実行する.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.Template#
+			 * @param {Object} data テンプレートパラメタ.
+			 * @returns {String} 出力文字列.
+			 */
+			render: function(data) {
+				var _text_;
+
+				_text_ = '';
+				with (data || {}) {
+					eval(this.code);
+				}
+				return _text_;
+			}
+		});
+		return _class_;
+	})(this);
+	this.TemplateEngine = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Object.extend((
+			/**
+			 * @since 0.1.4
+			 * @class at.pkgs.TemplateEngine
+			 * @classdesc
+			 *     テンプレートエンジンクラス.
+			 *     チュートリアル: {@tutorial at.pkgs.Template}
+			 * @extends {at.pkgs.Object}
+			 * @param {at.pkgs.TemplateEngine=} instance インスタンス.
+			 */
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+			}
+		), { /* prototype */
+			/**
+			 * @typedef {Function} at.pkgs.TemplateEngine~Renderer
+			 * @param {Object} data テンプレートパラメタ.
+			 * @returns {String} 出力文字列.
+			 */
+			/**
+			 * テンプレートデリミタパターン.
+			 * 
+			 * `/スクリプトブロックパターン|エスケープ出力ブロックパターン|直接出力ブロックパターン|$/g`形式
+			 * 
+			 * インスタンスの本メソッドを上書きすることでデリミタを変更可能.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.TemplateEngine#
+			 * @type {RegExp}
+			 */
+			pattern: /\{%(.*?)%\}|\{=(.*?)=\}|\{@(.*?)@\}|$/g,
+			/**
+			 * エスケープ関数.
+			 * 
+			 * インスタンスの本メソッドを上書きすることでエスケープ処理を変更可能.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.TemplateEngine#
+			 * @method
+			 * @param {*} source エスケープ対象.
+			 * @returns {String} エスケープ済文字列.
+			 */
+			escape: _namespace_.escape.html,
+			/**
+			 * 直接出力関数.
+			 * 
+			 * インスタンスの本メソッドを上書きすることで直接出力処理を変更可能.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.TemplateEngine#
+			 * @method
+			 * @param {*} source 対象.
+			 * @returns {String} 文字列.
+			 */
+			raw: _namespace_.escape.empty,
+			/**
+			 * テンプレートソースを処理しテンプレート実行関数を生成する.
+			 * 
+			 * @since 0.1.4
+			 * @memberof at.pkgs.TemplateEngine#
+			 * @param {String} source テンプレートソース.
+			 * @returns {at.pkgs.TemplateEngine~Renderer} テンプレート実行関数.
+			 */
+			prepare: function(source) {
+				var template;
+				var renderer;
+
+				template = new _namespace_.Template(source, this);
+				renderer = function(data) {
+					return template.render(data);
+				};
+				renderer.template = template;
+				return renderer;
+			}
+		});
+		/**
+		 * デフォルトテンプレートエンジンインスタンス.
+		 * 
+		 * 本インスタンスの各メソッドを上書きすることでat.pkgs.template()の振舞いを変更可能.
+		 * 
+		 * @since 0.1.4
+		 * @member at.pkgs.TemplateEngine.instance
+		 * @type {at.pkgs.TemplateEngine}
+		 */
+		_class_.instance = new _class_();
+		return _class_;
+	})(this);
+	this.template = (function(_namespace_) {
+		var _function_;
+
+		/**
+		 * デフォルトテンプレートエンジンを使用してテンプレートを処理し、テンプレート実行関数を生成する.
+		 * 
+		 * チュートリアル: {@tutorial at.pkgs.Template}
+		 * 
+		 * @since 0.1.4
+		 * @method at.pkgs.template
+		 * @param {String} source テンプレートソース.
+		 * @returns {at.pkgs.TemplateEngine~Renderer} テンプレート実行関数.
+		 */
+		_function_ = function(source) {
+			return _namespace_.TemplateEngine.instance.prepare(source);
+		};
+		return _function_;
 	})(this);
 })(this);

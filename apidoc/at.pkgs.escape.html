@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>at.pkgs.js tutorialat.pkgs.Object</title>
+	<title>at.pkgs.js Namespace: escape</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -107,191 +107,388 @@
 	<div class="row-fluid">
 
 		
-			<div class="span12">
-				
+		<div class="span8">
+			
 				<div id="main">
-					<section>
-    
-<header>
-    
+					
 
-    <h2>at.pkgs.Object</h2>
-</header>  
+
+	<h1 class="page-title">Namespace: escape</h1>
+<section>
+
+<header>
+    <h2>
+        <span class="ancestors"><a href="at.pkgs.html">at.pkgs</a>.</span>
+    
+    escape
+    </h2>
+    
+</header>
 
 <article>
-    <p>基本的な継承に関わる機能を提供します。</p>
-<ul>
-<li>APIリファレンス: <a href="at.pkgs.Object.html">at.pkgs.Object</a></li>
-</ul>
-<h2>使用例</h2>
-<h3>基底クラスのメソッド呼び出し(正しい方法)</h3>
-<p>基底クラスのメソッドを呼び出すメソッドはインスタンス変数を伝播するように設計してください。</p>
-<pre><code>var A, B, C;
+    <div class="container-overview">
+    
 
-A = at.pkgs.Object.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(instance);
-        console.log('A(' + num + ')');
-        instance.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
+    
+        
 
-});
+        
+<dl class="details">
+    
 
-B = A.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(num, instance);
-        console.log('B');
-    }
-), { /* prototype */
+    
 
-}, { /* statics */
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>0.1.4</dd>
+    
 
-});
+    
 
-C = B.extend((
-    function(num, instance) {
-        instance = instance || this;
-        this.parent.self(num, instance);
-        console.log('C');
-    }
-), { /* prototype */
+    
 
-}, { /* statics */
+    
 
-});
+    
 
-var c0, c1;
+    
 
-c0 = new C(0);
-// A(0)
-// B
-// C
-c1 = new C(1);
-// A(1)
-// B
-// C
-c0.f();
-// A.x: 0
-c1.f();
-// A.x: 1</code></pre>
-<h3>基底クラスのメソッド呼び出し: 誤った方法#1: 親クラスのプロトタイプ汚染</h3>
-<p>基底クラスへインスタンス変数を渡さないため親クラスのプロトタイプが汚染されます。</p>
-<pre><code>var A, B, C;
+    
 
-A = at.pkgs.Object.extend((
-    function(num) {
-        this.parent.self();
-        console.log('A(' + num + ')');
-        // !!!!!!!!!!
-        this.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="at.pkgs.js.html">at.pkgs.js</a>, <a href="at.pkgs.js.html#sunlight-1-line-491">line 491</a>
+    </li></ul></dd>
+    
 
-});
+    
 
-B = A.extend((
-    function(num) {
-        this.parent.self(num);
-        console.log('B');
-    }
-), { /* prototype */
+    
 
-}, { /* statics */
+    
+</dl>
 
-});
 
-C = B.extend((
-    function(num) {
-        this.parent.self(num);
-        console.log('C');
-    }
-), { /* prototype */
+        
+    
+    </div>
 
-}, { /* statics */
+    
 
-});
+    
 
-var c0, c1;
+    
 
-c0 = new C(0);
-// A(0)
-// B
-// C
-c1 = new C(1);
-// A(1)
-// B
-// C
-c0.f();
-// !!!!!!
-// A.x: 1
-c1.f();
-// A.x: 1</code></pre>
-<h3>基底クラスのメソッド呼び出し: 誤った方法#2: 親クラスから親クラスのメソッドが呼び出せない</h3>
-<p>子孫の実行コンテキストで親クラスのメソッドを呼び出すと親クラスから親クラスを呼び出すことができません。</p>
-<pre><code>var A, B, C;
+    
 
-A = at.pkgs.Object.extend((
-    function(num) {
-        this.parent.self.call(this);
-        console.log('A(' + num + ')');
-        this.x = num;
-    }
-), { /* prototype */
-    x: null,
-    f: function() {
-        console.log('A.x: ' + this.x);
-    }
-}, { /* statics */
+    
 
-});
+    
 
-B = A.extend((
-    function(num) {
-        this.parent.self.call(this, num);
-        console.log('B');
-    }
-), { /* prototype */
+    
+        <h3 class="subsection-title">Methods</h3>
 
-}, { /* statics */
+        <dl>
+            
+<dt>
+    <h4 class="name" id="empty"><span class="type-signature">&lt;static> </span>empty<span class="signature">(source)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>null及びundefinedを空文字にエスケープする.</p>
+    </div>
+    
 
-});
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
 
-C = B.extend((
-    function(num) {
-        this.parent.self.call(this, num);
-        console.log('C');
-    }
-), { /* prototype */
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
 
-}, { /* statics */
+		<th>Type</th>
 
-});
+		
 
-var c0;
+		
 
-c0 = new C(0);
-// B
-// B
-// B
-// B
-// B
-// ...</code></pre>
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>エスケープ対象.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>0.1.4</dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="at.pkgs.js.html">at.pkgs.js</a>, <a href="at.pkgs.js.html#sunlight-1-line-499">line 499</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>エスケープ済文字列.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="html"><span class="type-signature">&lt;static> </span>html<span class="signature">(source)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>HTML内のテキストとしてエスケープする.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>エスケープ対象.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>0.1.4</dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="at.pkgs.js.html">at.pkgs.js</a>, <a href="at.pkgs.js.html#sunlight-1-line-515">line 515</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>エスケープ済文字列.</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
 </article>
 
-</section>  
+</section>
+
+
+
 
 				</div>
 
@@ -311,6 +508,10 @@ c0 = new C(0);
 				</footer>
 			</div>
 
+			
+			<div class="span3">
+				<div id="toc"></div>
+			</div>
 			
 			<br clear="both">
 		</div>

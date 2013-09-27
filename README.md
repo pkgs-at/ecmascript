@@ -2,7 +2,7 @@ at.pkgs.js
 ========
 ECMAScript/JavaScript向けのライブラリスタックです。
 
-[ドキュメントはこちら](http://pkgs-at.github.io/ecmascript/index.html)
+[ドキュメントはこちら](http://js.pkgs.at/)
 
 ライセンス
 --------

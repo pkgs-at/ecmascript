@@ -14,19 +14,19 @@ at.pkgs.jsはECMAScript/JavaScript向けのライブラリスタックです。
 
 詳細は各リンク先のドキュメントを参照してください。
 
-### {@link at.pkgs|Namespace: at.pkgs} ###
+### Namespace: {@link at.pkgs} ###
 
 {@link at.pkgs.js|Source: at.pkgs.js} に含まれます。
 実行環境に依存しない基本機能を提供します。
 
-#### {@link at.pkgs.Object|Class: at.pkgs.Object} ####
+#### Class: {@tutorial at.pkgs.Object} ####
 
 基本的な継承に関わる機能を提供します。
 
 + チュートリアル: {@tutorial at.pkgs.Object}
 + APIリファレンス: {@link at.pkgs.Object}
 
-#### {@link at.pkgs.Log|Class: at.pkgs.Log} ####
+#### Class: {@tutorial at.pkgs.Log} ####
 
 ログに関する機能を提供します。
 IE10以前を除くモダンブラウザではコールスタックが出力されます。
@@ -34,12 +34,27 @@ IE10以前を除くモダンブラウザではコールスタックが出力さ�
 + チュートリアル: {@tutorial at.pkgs.Log}
 + APIリファレンス: {@link at.pkgs.Log}
 
-#### {@link at.pkgs.EventBinder|Class: at.pkgs.EventBinder} ####
+#### Class: {@tutorial at.pkgs.EventBinder} ####
 
 イベント通知用のバインダを提供します。
 
 + チュートリアル: {@tutorial at.pkgs.EventBinder}
 + APIリファレンス: {@link at.pkgs.EventBinder}
+
+#### Namespace: {@link at.pkgs.escape} ####
+
+エスケープ処理を提供します。
+
++ APIリファレンス: {@link at.pkgs.escape}
+
+#### Category: {@tutorial at.pkgs.Template} ####
+
+underscore.jsテンプレート相当のテンプレート処理を提供します。
+
++ チュートリアル: {@tutorial at.pkgs.Template}
++ APIリファレンス: {@link at.pkgs.Template}
++ APIリファレンス: {@link at.pkgs.TemplateEngine}
++ APIリファレンス: {@link at.pkgs.template}
 
 ## ソースコード ##
 
