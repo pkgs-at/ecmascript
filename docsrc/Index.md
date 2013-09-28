@@ -41,6 +41,13 @@ IE10以前を除くモダンブラウザではコールスタックが出力さ�
 + チュートリアル: {@tutorial at.pkgs.EventBinder}
 + APIリファレンス: {@link at.pkgs.EventBinder}
 
+#### Class: {@tutorial at.pkgs.ObservableValue} ####
+
+値が変化するとイベントを通知するラッパクラスです。
+
++ チュートリアル: {@tutorial at.pkgs.EventBinder}
++ APIリファレンス: {@link at.pkgs.ObservableValue}
+
 #### Namespace: {@link at.pkgs.escape} ####
 
 エスケープ処理を提供します。

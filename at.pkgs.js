@@ -17,7 +17,7 @@
 
 /**
  * @file Core components of at.pkgs ECMAScript / JavaScript library.
- * @version 0.1.4
+ * @version 0.1.5
  * @author 鈴木 聰太郎 <sotaro.suzuki@architector.jp>
  * @copyright 2009-2013, Architector Inc., Japan
  * @namespace at.pkgs
@@ -411,6 +411,7 @@
 			 * 
 			 * イベント発火時の実行コンテキスト(this)にはイベントハンドラ自身が設定される.
 			 * 
+			 * @since 0.1.0
 			 * @callback at.pkgs.EventBinder~EventHandler
 			 * @param {...*} arguments イベント発火時に与えられたパラメタ.
 			 * @returns {Boolean=} 後続のイベントハンドラを実行しない場合はfalse.
@@ -484,6 +485,77 @@
 					if (handler.apply(handler, arguments) === false) break;
 				}
 				return this;
+			}
+		});
+		return _class_;
+	})(this);
+	this.ObservableValue = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.EventBinder.extend((
+			/**
+			 * @since 0.1.5
+			 * @class at.pkgs.ObservableValue
+			 * @classdesc
+			 *     値変更通知クラス.
+			 *     チュートリアル: {@tutorial at.pkgs.EventBinder}
+			 *     このクラスのイベントハンドラは第1引数に変更前の値、第2引数に変更後の値を受け取る.
+			 * @extends {at.pkgs.EventBinder}
+			 * @param {*=} value 初期値.
+			 * @param {at.pkgs.ObservableValue=} instance インスタンス.
+			 */
+			function(value, instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.value = value;
+			}
+		), {
+			/**
+			 * 現在値.
+			 * 
+			 * @since 0.1.5
+			 * @memberof at.pkgs.ObservableValue#
+			 * @type {*}
+			 */
+			value: null,
+			/**
+			 * 値を設定する.
+			 * 
+			 * @since 0.1.5
+			 * @memberof at.pkgs.ObservableValue#
+			 * @param {*} value 新しい値.
+			 */
+			set: function(value) {
+				var previous;
+
+				previous = this.value;
+				this.value = value;
+				if (this.changed(previous, value))
+					this.fire(previous, value);
+			},
+			/**
+			 * 値を取得する.
+			 * 
+			 * @since 0.1.5
+			 * @memberof at.pkgs.ObservableValue#
+			 * @returns {*} 現在の値.
+			 */
+			get: function() {
+				return this.value;
+			},
+			/**
+			 * 値を比較する.
+			 * 
+			 * 継承するか、インスタンスの本メソッドを上書きすることで比較方法を変更可能.
+			 * 
+			 * @since 0.1.5
+			 * @memberof at.pkgs.ObservableValue#
+			 * @param {*} previous 以前の値.
+			 * @param {*} current 現在の値.
+			 * @returns {Boolean} 変化した場合はtrue;
+			 */
+			changed: function(previous, current) {
+				return previous !== current;
 			}
 		});
 		return _class_;
@@ -606,7 +678,7 @@
 					var expression;
 
 					if (last != offset) {
-						codes.push('_text_ += this.text(' + self.texts.length + ');');
+						codes.push('_text_ += _this_.text(' + self.texts.length + ');');
 						self.texts.push(source.slice(last, offset));
 					}
 					last = offset + matched.length;
@@ -614,9 +686,9 @@
 					if (code)
 						codes.push(expression);
 					if (escape)
-						codes.push('_text_ += this.escape(' + expression + ');');
+						codes.push('_text_ += _this_.escape(' + expression + ');');
 					if (raw)
-						codes.push('_text_ += this.raw(' + expression + ');');
+						codes.push('_text_ += _this_.raw(' + expression + ');');
 					return matched;
 				});
 				this.code = codes.join('\n');
@@ -659,17 +731,17 @@
 			 * 
 			 * @since 0.1.4
 			 * @memberof at.pkgs.Template#
-			 * @param {Object} data テンプレートパラメタ.
+			 * @param {Object} _data_ テンプレートパラメタ.
 			 * @returns {String} 出力文字列.
 			 */
-			render: function(data) {
+			render: function(_data_) {
+				var _this_;
 				var _text_;
 
-				if (data._text_ !== void 0)
-					throw new Error('do not use property \'_text_\' in template parameter');
+				_this_ = this;
 				_text_ = '';
-				with (data || {}) {
-					eval(this.code);
+				with (_data_ || {}) {
+					eval(_this_.code);
 				}
 				return _text_;
 			}
@@ -695,6 +767,7 @@
 			}
 		), { /* prototype */
 			/**
+			 * @since 0.1.4
 			 * @typedef {Function} at.pkgs.TemplateEngine~Renderer
 			 * @param {Object} data テンプレートパラメタ.
 			 * @returns {String} 出力文字列.
