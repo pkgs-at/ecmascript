@@ -88,6 +88,19 @@
 		 * @type {Object}
 		 */
 		_class_.prototype.parent = null;
+		/**
+		 * 指定された名称のプロパティを直接持つか取得する.
+		 * 
+		 * @since 0.1.5
+		 * @memberof at.pkgs.Object#
+		 * @function
+		 * @name immediate
+		 * @param {String} プロパティ名.
+		 * @returns {Boolean} 持つならばtrue.
+		 */
+		_class_.prototype.immediate = function(name) {
+			return this.self.prototype.hasOwnProperty(name);
+		};
 		return _class_;
 	})(this);
 	this.Log = (function(_namespace_) {
@@ -564,7 +577,7 @@
 	 * @since 0.1.4
 	 * @namespace at.pkgs.escape
 	 */
-	this.escape = new (function(_parent_) {
+	this.escape = new (function() {
 		this.empty = (function(_namespace_) {
 			var _function_;
 
@@ -610,7 +623,7 @@
 			};
 			return _function_;
 		})(this);
-	})(this);
+	})();
 	this.Template = (function(_namespace_) {
 		var _class_;
 

@@ -207,7 +207,7 @@
 			console.log('B:0');
 			this.parent.initialize(instance);
 			console.log('B:1');
-			if (!this.hasOwnProperty('initialize')) return;
+			if (!this.immediate('initialize')) return;
 			// ここは安全です
 			console.log('B:2');
 		}
@@ -230,4 +230,5 @@
 	// B:1
 
 上記の例ではクラスCでinitialize()メソッドをオーバーライドしていないため、C#initialize()メソッド呼び出しでプロトタイプチェイン経由でB#initialize()が実行されます。
-this.hasOwnProperty(name)等を使用して多重実行からガードしてください。
+通常この振る舞いは意図しないものとなります。
+at.pkgs.Object#immediate(name)等を使用して多重実行からガードしてください。
