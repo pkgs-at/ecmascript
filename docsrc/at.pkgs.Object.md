@@ -178,3 +178,56 @@
 	// B
 	// B
 	// ...
+
+### サブクラスに未実装のメソッドの多重呼び出しに対する備考 ###
+
+下記のようなケースを考慮してください。
+
+	var A, B, C;
+	
+	A = at.pkgs.Object.extend((
+		function(instance) {
+			instance = instance || this;
+			this.parent.self(instance);
+		}
+	), { /* prototype */
+		initialize: function(instance) {
+			instance = instance || this;
+			console.log('A');
+		}
+	});
+	B = A.extend((
+		function(instance) {
+			instance = instance || this;
+			this.parent.self(instance);
+		}
+	), { /* prototype */
+		initialize: function(instance) {
+			instance = instance || this;
+			console.log('B:0');
+			this.parent.initialize(instance);
+			console.log('B:1');
+			if (!this.hasOwnProperty('initialize')) return;
+			// ここは安全です
+			console.log('B:2');
+		}
+	});
+	C = at.pkgs.Object.extend((
+		function(instance) {
+			instance = instance || this;
+			this.parent.self(instance);
+		}
+	), { /* prototype */
+		// initializeをオーバーライドしません.
+	});
+	
+	(new C()).initialize();
+	// B:0
+	// B:0
+	// A
+	// B:1
+	// B:2
+	// B:1
+
+上記の例ではクラスCでinitialize()メソッドをオーバーライドしていないため、C#initialize()メソッド呼び出しでプロトタイプチェイン経由でB#initialize()が実行されます。
+this.hasOwnProperty(name)等を使用して多重実行からガードしてください。
