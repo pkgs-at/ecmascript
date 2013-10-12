@@ -796,7 +796,7 @@
 			 * @memberof at.pkgs.TemplateEngine#
 			 * @type {RegExp}
 			 */
-			pattern: /\{%(.*?)%\}|\{=(.*?)=\}|\{@(.*?)@\}|$/g,
+			pattern: /\{%([\s\S]*?)%\}|\{=([\s\S]*?)=\}|\{@([\s\S]*?)@\}|$/g,
 			/**
 			 * エスケープ関数.
 			 * 

@@ -53,7 +53,7 @@ underscore.jsテンプレート相当のテンプレート処理を提供しま�
 
 	var template;
 	
-	at.pkgs.TemplateEngine.instance.pattern = /<%(.*?)%>|<=(.*?)=>|<@(.*?)@>|$/g;
+	at.pkgs.TemplateEngine.instance.pattern = /<%([\s\S]*?)%>|<=([\s\S]*?)=>|<@([\s\S]*?)@>|$/g;
 	template = at.pkgs.template('\
 	  あいうえお\
 	  <% if (a) { %>\
