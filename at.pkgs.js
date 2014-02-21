@@ -30,9 +30,12 @@
 	 * 8bitの巡回冗長検査値(CRC-8).
 	 * ユニコード文字については下位8bitのみを対象とする.
 	 * 
+	 * セキュリティには全く寄与しない.
+	 * チェックサムやラウンドロビンなどに使用する.
+	 * 
 	 * @since 0.1.6
 	 * @method at.pkgs.hash
-	 * @param {String} source エスケープ対象.
+	 * @param {String} source ハッシュ値計算対象文字列.
 	 * @returns {Number} 0から255までのハッシュ値.
 	 */
 	this.hash = (function(_namespace_) {
