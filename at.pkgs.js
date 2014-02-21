@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2013, Architector Inc., Japan
+ * Copyright (c) 2009-2014, Architector Inc., Japan
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
  * @file Core components of at.pkgs ECMAScript / JavaScript library.
  * @version 0.1.6
  * @author 鈴木 聰太郎 <sotaro.suzuki@architector.jp>
- * @copyright 2009-2013, Architector Inc., Japan
+ * @copyright 2009-2014, Architector Inc., Japan
  * @namespace at.pkgs
  */
 
