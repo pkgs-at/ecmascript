@@ -17,13 +17,72 @@
 
 /**
  * @file Core components of at.pkgs ECMAScript / JavaScript library.
- * @version 0.1.5
+ * @version 0.1.6
  * @author 鈴木 聰太郎 <sotaro.suzuki@architector.jp>
  * @copyright 2009-2013, Architector Inc., Japan
  * @namespace at.pkgs
  */
 
 (at = this.at || {}).pkgs = new (function(_root_) {
+	/**
+	 * 文字列の簡易ハッシュ値を計算する.
+	 * 
+	 * 8bitの巡回冗長検査値(CRC-8).
+	 * ユニコード文字については下位8bitのみを対象とする.
+	 * 
+	 * @since 0.1.6
+	 * @method at.pkgs.hash
+	 * @param {String} source エスケープ対象.
+	 * @returns {Number} 0から255までのハッシュ値.
+	 */
+	this.hash = (function(_namespace_) {
+		var table;
+
+		table = [
+			0x00, 0x85, 0x8F, 0x0A, 0x9B, 0x1E, 0x14, 0x91,
+			0xB3, 0x36, 0x3C, 0xB9, 0x28, 0xAD, 0xA7, 0x22,
+			0xE3, 0x66, 0x6C, 0xE9, 0x78, 0xFD, 0xF7, 0x72,
+			0x50, 0xD5, 0xDF, 0x5A, 0xCB, 0x4E, 0x44, 0xC1,
+			0x43, 0xC6, 0xCC, 0x49, 0xD8, 0x5D, 0x57, 0xD2,
+			0xF0, 0x75, 0x7F, 0xFA, 0x6B, 0xEE, 0xE4, 0x61,
+			0xA0, 0x25, 0x2F, 0xAA, 0x3B, 0xBE, 0xB4, 0x31,
+			0x13, 0x96, 0x9C, 0x19, 0x88, 0x0D, 0x07, 0x82,
+			0x86, 0x03, 0x09, 0x8C, 0x1D, 0x98, 0x92, 0x17,
+			0x35, 0xB0, 0xBA, 0x3F, 0xAE, 0x2B, 0x21, 0xA4,
+			0x65, 0xE0, 0xEA, 0x6F, 0xFE, 0x7B, 0x71, 0xF4,
+			0xD6, 0x53, 0x59, 0xDC, 0x4D, 0xC8, 0xC2, 0x47,
+			0xC5, 0x40, 0x4A, 0xCF, 0x5E, 0xDB, 0xD1, 0x54,
+			0x76, 0xF3, 0xF9, 0x7C, 0xED, 0x68, 0x62, 0xE7,
+			0x26, 0xA3, 0xA9, 0x2C, 0xBD, 0x38, 0x32, 0xB7,
+			0x95, 0x10, 0x1A, 0x9F, 0x0E, 0x8B, 0x81, 0x04,
+			0x89, 0x0C, 0x06, 0x83, 0x12, 0x97, 0x9D, 0x18,
+			0x3A, 0xBF, 0xB5, 0x30, 0xA1, 0x24, 0x2E, 0xAB,
+			0x6A, 0xEF, 0xE5, 0x60, 0xF1, 0x74, 0x7E, 0xFB,
+			0xD9, 0x5C, 0x56, 0xD3, 0x42, 0xC7, 0xCD, 0x48,
+			0xCA, 0x4F, 0x45, 0xC0, 0x51, 0xD4, 0xDE, 0x5B,
+			0x79, 0xFC, 0xF6, 0x73, 0xE2, 0x67, 0x6D, 0xE8,
+			0x29, 0xAC, 0xA6, 0x23, 0xB2, 0x37, 0x3D, 0xB8,
+			0x9A, 0x1F, 0x15, 0x90, 0x01, 0x84, 0x8E, 0x0B,
+			0x0F, 0x8A, 0x80, 0x05, 0x94, 0x11, 0x1B, 0x9E,
+			0xBC, 0x39, 0x33, 0xB6, 0x27, 0xA2, 0xA8, 0x2D,
+			0xEC, 0x69, 0x63, 0xE6, 0x77, 0xF2, 0xF8, 0x7D,
+			0x5F, 0xDA, 0xD0, 0x55, 0xC4, 0x41, 0x4B, 0xCE,
+			0x4C, 0xC9, 0xC3, 0x46, 0xD7, 0x52, 0x58, 0xDD,
+			0xFF, 0x7A, 0x70, 0xF5, 0x64, 0xE1, 0xEB, 0x6E,
+			0xAF, 0x2A, 0x20, 0xA5, 0x34, 0xB1, 0xBB, 0x3E,
+			0x1C, 0x99, 0x93, 0x16, 0x87, 0x02, 0x08, 0x8D];
+		return function(source) {
+			var index;
+			var value;
+
+			value = 0;
+			for (index = 0; index < source.length; index ++) {
+				value ^= source.charCodeAt(index);
+				value = table[value & 0xFF];
+			}
+			return value;
+		};
+	})(this);
 	this.Object = (function(_namespace_) {
 		var _class_;
 
@@ -569,6 +628,231 @@
 			 */
 			changed: function(previous, current) {
 				return previous !== current;
+			}
+		});
+		return _class_;
+	})(this);
+	this.OnceUpon = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Object.extend((
+			/**
+			 * @since 0.1.6
+			 * @class at.pkgs.OnceUpon
+			 * @classdesc
+			 *     非同期処理結果キャッシュクラス.
+			 *     
+			 *     非同期処理を1回だけ実行し、複数回の呼出で初回実行時の結果を返す.
+			 *     
+			 *     チュートリアル: {@tutorial at.pkgs.OnceUpon}
+			 * @extends {at.pkgs.Object}
+			 * @param {at.pkgs.OnceUpon~Operation} operation 実行する処理.
+			 * @param {at.pkgs.OnceUpon=} instance インスタンス.
+			 */
+			function(operation, instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.operation = operation;
+				instance.binder = new _namespace_.EventBinder();
+			}
+		), { /* prototype */
+			/**
+			 * 非同期処理結果キャッシュクラスで実行する処理.
+			 * 
+			 * 処理の実行コンテキスト(this)にはキャッシュクラスが設定される.
+			 * 実行結果はthis.set(value)を使用して設定する.
+			 * 実行結果を設定しない場合は2度と呼び出されず、また結果取得コールバックも呼び出されない.
+			 * 
+			 * @since 0.1.6
+			 * @callback at.pkgs.OnceUpon~Operation
+			 * @returns {Object=} キャンセルなどを行う場合に使用するオブジェクト.
+			 */
+			/**
+			 * 非同期実行結果取得コールバック.
+			 * 
+			 * 結果取得時の実行コンテキスト(this)にはコールバック自身が設定される.
+			 * 
+			 * @since 0.1.6
+			 * @callback at.pkgs.OnceUpon~Callback
+			 * @param {*} value 実行結果.
+			 */
+			/**
+			 * 実行する処理.
+			 * 
+			 * 実行済みの場合はnull.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @type {Function}
+			 */
+			operation: null,
+			/**
+			 * 結果取得イベントバインダ.
+			 * 
+			 * 結果取得済みの場合はnull.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @type {at.pkgs.EventBinder}
+			 */
+			binder: null,
+			/**
+			 * 処理中の処理オブジェクト(処理開始時の返値).
+			 * 
+			 * 結果取得後のコールバック呼出し後はnull.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @type {*}
+			 */
+			process: null,
+			/**
+			 * 処理結果.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @type {*}
+			 */
+			value: null,
+			/**
+			 * 処理結果を設定する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @param {*} value 処理結果.
+			 */
+			set: function(value) {
+				var binder;
+
+				if (!this.binder) return;
+				this.value = value;
+				binder = this.binder;
+				this.binder = null;
+				binder.fire(this.value);
+				this.process = null;
+			},
+			/**
+			 * 処理結果を取得する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceUpon#
+			 * @param {at.pkgs.OnceUpon~Callback=} callback コールバック.
+			 * @returns {*} nullまたは実行結果.
+			 */
+			get: function(callback) {
+				var operation;
+
+				if (this.binder) {
+					if (callback) this.binder.bind(callback);
+					if (this.operation) {
+						operation = this.operation;
+						this.operation = null;
+						this.process = operation.apply(this);
+					}
+				}
+				else {
+					if (callback) callback.call(callback, this.value);
+				}
+				return this.value;
+			}
+		});
+		return _class_;
+	})(this);
+	this.OnceAfterAll = (function(_namespace_) {
+		var _class_;
+
+		_class_ = _namespace_.Object.extend((
+			/**
+			 * @since 0.1.6
+			 * @class at.pkgs.OnceAfterAll
+			 * @classdesc
+			 *     個別処理結果待ち合わせクラス.
+			 *     
+			 *     複数の個別処理の全数完了後に1回だけ処理を実行する.
+			 *     
+			 *     チュートリアル: {@tutorial at.pkgs.OnceAfterAll}
+			 * @extends {at.pkgs.Object}
+			 * @param {at.pkgs.OnceAfterAll=} instance インスタンス.
+			 */
+			function(instance) {
+				instance = instance || this;
+				this.parent.self(instance);
+				instance.binder = new _namespace_.EventBinder();
+				instance.jobs = 0;
+				instance.succeed = true;
+			}
+		), { /* prototype */
+			/**
+			 * 個別処理結果待ち合わせクラスで完了後に実行する処理.
+			 * 
+			 * @since 0.1.6
+			 * @callback at.pkgs.OnceAfterAll~Operation
+			 * @param {Boolean} 処理結果フラグ.
+			 */
+			/**
+			 * 処理完了イベントバインダ.
+			 * 
+			 * 実行済みの場合はnull.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {at.pkgs.EventBinder}
+			 */			
+			binder: null,
+			/**
+			 * 実行中の個別処理の数.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {Number}
+			 */
+			jobs: null,
+			/**
+			 * 処理結果フラグ.
+			 * 
+			 * 失敗を報告した個別処理が一つでもあればfalse.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @type {Function}
+			 */
+			succeed: null,
+			/**
+			 * 完了後の処理を追加する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @param {at.pkgs.OnceAfterAll~Operation} operation 完了後に実行する処理.
+			 */
+			bind: function(handler) {
+				this.binder.bind(handler);
+			},
+			/**
+			 * 個別処理結果の開始を通知する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 */
+			enter: function() {
+				if (this.binder) this.jobs ++;
+			},
+			/**
+			 * 個別処理結果の完了を通知する.
+			 * 
+			 * @since 0.1.6
+			 * @memberof at.pkgs.OnceAfterAll#
+			 * @param {Boolean=} succeed falseを指定すると処理失敗となる.
+			 */
+			leave: function(succeed) {
+				var binder;
+
+				if (!this.binder) return;
+				if (succeed === false) this.succeed = false;
+				this.jobs --;
+				if (this.jobs > 0) return;
+				binder = this.binder;
+				this.binder = null;
+				binder.fire(this.succeed);
 			}
 		});
 		return _class_;
