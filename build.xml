@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build-main">
+	<!-- project settings -->
+	<property file="build.properties"/>
+	<property
+			name="version"
+			value="0.1.6"/>
+	<!-- properties -->
+	<property
+			name="output"
+			value="at.pkgs-${version}.js"/>
+	<property
+			name="output.tmp"
+			value="at.pkgs-${version}.tmp.js"/>
+	<property
+			name="output.min"
+			value="at.pkgs-${version}.min.js"/>
+	<target name="build-main">
+		<copy
+				file="at.pkgs.js"
+				tofile="${output}"
+				overwrite="yes"/>
+		<copy
+				file="LICENSE.js"
+				tofile="${output.min}"
+				overwrite="yes"/>
+		<echo
+				file="${output.min}"
+				append="yes">
+// at.pkgs.js version: ${version}
+</echo>
+		<java
+				jar="${compressor}"
+				fork="true"
+				spawn="false"
+				output="${output.tmp}"
+				failonerror="true">
+			<arg value="${output}"/>
+			<arg value="--line-break"/><arg value="0"/>
+		</java>
+		<concat
+				destfile="${output.min}"
+				eol="lf"
+				append="yes">
+			<path path="${output.tmp}"/>
+		</concat>
+		<delete file="${output.tmp}"/>
+		<copy
+				file="${output.min}"
+				tofile="at.pkgs.min.js"
+				overwrite="yes"/>
+	</target>
+</project>
