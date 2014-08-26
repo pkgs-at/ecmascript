@@ -4,7 +4,7 @@
 	<property file="build.properties"/>
 	<property
 			name="version"
-			value="0.1.6"/>
+			value="1.0.0"/>
 	<!-- properties -->
 	<property
 			name="output"
