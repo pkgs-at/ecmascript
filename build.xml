@@ -49,5 +49,9 @@
 				file="${output.min}"
 				tofile="at.pkgs.min.js"
 				overwrite="yes"/>
+		<exec
+				executable="${jsdoc3}">
+			<arg value="--configure"/><arg value="jsdoc3.conf"/>
+		</exec>
 	</target>
 </project>
